@@ -15,10 +15,4 @@ public class IndexController {
     public String home() {
         return "HOME";
     }
-
-    @GetMapping("/loginPage")
-    public String loginPage() {
-        return "login Page!";
-    }
-
 }
