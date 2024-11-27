@@ -20,6 +20,9 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .sessionFixation(fixation -> fixation.changeSessionId()) // default 설정
+                )
                 .build();
     }
 
