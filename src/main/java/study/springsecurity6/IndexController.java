@@ -15,4 +15,14 @@ public class IndexController {
     public String home() {
         return "HOME";
     }
+
+    @GetMapping("/invalidSessionUrl")
+    public String invalidSession() {
+        return "invalidSession!";
+    }
+
+    @GetMapping("/expiredUrl")
+    public String expiredUrl() {
+        return "expiredUrl";
+    }
 }

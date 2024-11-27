@@ -18,8 +18,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/invalidSessionUrl", "/expiredUrl").permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/invalidSessionUrl")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false) // 이전 세션 만료 default
+                        //.maxSessionsPreventsLogin(true) // 로그인 시도 차단
+                        .expiredUrl("/expiredUrl")
+                )
                 .build();
     }
 
