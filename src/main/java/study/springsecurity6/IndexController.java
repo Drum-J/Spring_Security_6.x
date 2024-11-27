@@ -15,4 +15,14 @@ public class IndexController {
     public String home() {
         return "HOME";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/denied")
+    public String denied() {
+        return "denied";
+    }
 }
