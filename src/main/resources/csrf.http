@@ -1,0 +1,9 @@
+### CSRF 기본적용 시 응답 확인 (csrf 토큰 없음)
+POST http://localhost:8080/csrf
+Content-Type: application/json
+
+### CSRF 기존 적용 시 응답 확인 (csrf 토큰 사용)
+POST http://localhost:8080/csrf
+Content-Type: application/x-www-form-urlencoded
+
+_csrf = GCmuaOcit7R0vMg8EDXkXwWwqN-mZPqHIWpykmgvj1usk3dQIBCWUd5GhtZZifkFdBjQZ2HVhebCXMmqQg4T9A4Zvm2VqhJk
