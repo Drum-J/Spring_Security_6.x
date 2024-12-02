@@ -1,3 +1,7 @@
+### GET 방식
+GET http://localhost:8080
+Content-Type: application/json
+
 ### CSRF 기본적용 시 응답 확인 (csrf 토큰 없음)
 POST http://localhost:8080/csrf
 Content-Type: application/json
@@ -6,4 +10,8 @@ Content-Type: application/json
 POST http://localhost:8080/csrf
 Content-Type: application/x-www-form-urlencoded
 
-_csrf = GCmuaOcit7R0vMg8EDXkXwWwqN-mZPqHIWpykmgvj1usk3dQIBCWUd5GhtZZifkFdBjQZ2HVhebCXMmqQg4T9A4Zvm2VqhJk
+_csrf = 4f0Y5CD7HSVREUa8zUsemWB9wSBXHmW48sC6ljTo7ag2BeT31cwr3RmZKhJ8IyCI_2Yq-lZM7EFvf1eVlqXepADZi5lUMdWT
+
+### GET csrfToken 확인
+GET http://localhost:8080/csrfToken
+Content-Type: application/json

@@ -1,5 +1,7 @@
 package study.springsecurity6;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,5 +22,13 @@ public class IndexController {
     @PostMapping("/csrf")
     public String csrf() {
         return "CSRF 적용됨";
+    }
+
+    @GetMapping("/csrfToken")
+    public String csrfToken(HttpServletRequest request) {
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        CsrfToken csrfToken2 = (CsrfToken) request.getAttribute("_csrf");
+
+        return csrfToken.getToken();
     }
 }
