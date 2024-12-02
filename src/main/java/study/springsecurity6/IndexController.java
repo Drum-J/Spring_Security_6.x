@@ -31,4 +31,14 @@ public class IndexController {
 
         return csrfToken.getToken();
     }
+
+    @PostMapping("/formCsrf")
+    public CsrfToken formCsrf(CsrfToken csrfToken) {
+        return csrfToken;
+    }
+
+    @PostMapping("/cookieCsrf")
+    public CsrfToken cookieCsrf(CsrfToken csrfToken) {
+        return csrfToken;
+    }
 }

@@ -10,38 +10,43 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import study.springsecurity6.CsrfCookieFilter;
+import study.springsecurity6.SpaCsrfTokenRequestHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /* 폼 태그 사용
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/csrf","/csrfToken","/form","/formCsrf").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+                .build();
+    }
+    */
 
-        // 세션에 토큰 저장. 명시하지 않아도 기본적으로 세션에 토큰을 저장한다.
-        HttpSessionCsrfTokenRepository csrfTokenRepository = new HttpSessionCsrfTokenRepository();
-        // 쿠키에 토큰 저장.
-        //CookieCsrfTokenRepository csrfTokenRepository = new CookieCsrfTokenRepository();
-
-        XorCsrfTokenRequestAttributeHandler csrfHandler = new XorCsrfTokenRequestAttributeHandler();
-        // 지연 로딩을 사용하지 않겠다.
-        csrfHandler.setCsrfRequestAttributeName(null);
+    // 쿠키 사용
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        SpaCsrfTokenRequestHandler csrfTokenRequestHandler = new SpaCsrfTokenRequestHandler();
 
         return http
                 .csrf(csrf -> csrf
-                        // 둘 중 하나 만 사용
-                        .csrfTokenRepository(csrfTokenRepository)
-                        // 자바스크립트에서 CSRF 토큰을 읽을 수 있게 허용
-                        //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(csrfHandler)
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(csrfTokenRequestHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/csrf","/csrfToken").permitAll()
+                        .requestMatchers("/csrf","/csrfToken","/cookie","/cookieCsrf").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .build();
     }
 
