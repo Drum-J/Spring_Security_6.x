@@ -15,4 +15,14 @@ public class IndexController {
     public String home() {
         return "HOME";
     }
+
+    @GetMapping("/api/photos")
+    public String photos() {
+        return "photos";
+    }
+
+    @GetMapping("/oauth/login")
+    public String oauth() {
+        return "oauthLogin";
+    }
 }
