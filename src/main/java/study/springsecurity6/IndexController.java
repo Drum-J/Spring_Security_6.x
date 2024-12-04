@@ -15,4 +15,19 @@ public class IndexController {
     public String home() {
         return "HOME";
     }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user";
+    }
+
+    @GetMapping("/db")
+    public String db() {
+        return "db";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
 }
