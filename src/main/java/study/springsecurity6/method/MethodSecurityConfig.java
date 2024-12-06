@@ -1,14 +1,17 @@
 package study.springsecurity6.method;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
+import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.method.AuthorizationManagerAfterMethodInterceptor;
@@ -34,6 +37,7 @@ public class MethodSecurityConfig {
     */
 
     //단일 포인트컷
+    /*
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor pointCutAdvisor() {
@@ -44,8 +48,10 @@ public class MethodSecurityConfig {
 
         return new AuthorizationManagerBeforeMethodInterceptor(pointcut, manager);
     }
+    */
 
     // 다중 포인트컷
+    /*
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor multiPointCutAdvisor() {
@@ -62,5 +68,25 @@ public class MethodSecurityConfig {
 
         return new AuthorizationManagerBeforeMethodInterceptor(composablePointcut, manager);
     }
+    */
 
+    @Bean
+    public MethodInterceptor methodInterceptor() {
+        AuthorizationManager<MethodInvocation> authorizationManager = new AuthenticatedAuthorizationManager<>();
+
+        return new CustomMethodInterceptor(authorizationManager);
+    }
+
+    @Bean
+    public Pointcut pointcut() {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(* study.springsecurity6.DataService.*(..))");
+
+        return pointcut;
+    }
+
+    @Bean
+    public Advisor serviceAdvisor() {
+        return new DefaultPointcutAdvisor(pointcut(), methodInterceptor());
+    }
 }
