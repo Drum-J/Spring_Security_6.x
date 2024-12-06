@@ -1,4 +1,4 @@
-package study.springsecurity6;
+package study.springsecurity6.exception;
 
 
 import org.springframework.security.core.AuthenticationException;
