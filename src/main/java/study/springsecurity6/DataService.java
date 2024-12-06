@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataService {
 
-    @PreAuthorize("")
+    //@PreAuthorize("")
     public String getUser() {
         return "user";
     }
 
-    @PostAuthorize("")
+    //@PostAuthorize("")
     public Account getOwner(String name) {
         return new Account(name, false);
     }
