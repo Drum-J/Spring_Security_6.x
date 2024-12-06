@@ -1,10 +1,15 @@
 package study.springsecurity6;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class IndexController {
+
+    private final DataService dataService;
 
     @GetMapping("/")
     public String index() {
@@ -18,16 +23,11 @@ public class IndexController {
 
     @GetMapping("/user")
     public String user() {
-        return "user";
+        return dataService.getUser();
     }
 
-    @GetMapping("/db")
-    public String db() {
-        return "db";
-    }
-
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin";
+    @GetMapping("/owner")
+    public Account admin(@RequestParam("name") String name) {
+        return dataService.getOwner(name);
     }
 }
