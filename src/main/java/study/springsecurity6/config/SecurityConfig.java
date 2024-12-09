@@ -2,6 +2,7 @@ package study.springsecurity6.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,12 +19,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user").hasRole("USER")
-                        .requestMatchers("/db").hasRole("DB")
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .build();
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatchers(matcher -> matcher.requestMatchers("/api/**"))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
 
