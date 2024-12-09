@@ -1,4 +1,4 @@
-package study.springsecurity6.controller;
+package study.springsecurity6.users.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,5 +9,12 @@ public class LoginController {
     @GetMapping("/login")
     public String login() {
         return "login/login";
+    }
+
+    @GetMapping("/signup")
+    public String signup() {
+        // Enum 값 전달
+        // model.addAttribute("roles", AccountRole.values());
+        return "login/signup";
     }
 }
