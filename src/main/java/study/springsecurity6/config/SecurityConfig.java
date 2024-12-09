@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import study.springsecurity6.MyCustomDsl;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .with(MyCustomDsl.myCustomDsl(), dsl -> dsl.setFlag(true))
                 .build();
     }
 
