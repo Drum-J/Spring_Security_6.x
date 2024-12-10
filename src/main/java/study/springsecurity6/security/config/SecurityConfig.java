@@ -14,6 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import study.springsecurity6.security.handler.FormAccessDeniedHandler;
+
+import static study.springsecurity6.entity.AccountRole.ADMIN;
+import static study.springsecurity6.entity.AccountRole.MANAGER;
+import static study.springsecurity6.entity.AccountRole.USER;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +36,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/","/signup","/login*").permitAll()
+                        .requestMatchers("/user").hasRole(USER.name())
+                        .requestMatchers("/manager").hasRole(MANAGER.name())
+                        .requestMatchers("/admin").hasRole(ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -40,6 +48,9 @@ public class SecurityConfig {
                         .failureHandler(failureHandler)
                 )
                 .authenticationProvider(authenticationProvider)
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(new FormAccessDeniedHandler("/denied"))
+                )
                 .build();
     }
 
