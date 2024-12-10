@@ -32,6 +32,7 @@ import static study.springsecurity6.entity.AccountRole.USER;
 public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider restAuthenticationProvider;
     private final AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
@@ -65,6 +66,7 @@ public class SecurityConfig {
     public SecurityFilterChain restSecurityFilterChain(HttpSecurity http) throws Exception {
 
         AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        managerBuilder.authenticationProvider(restAuthenticationProvider);
         AuthenticationManager authenticationManager = managerBuilder.build();
 
         return http
