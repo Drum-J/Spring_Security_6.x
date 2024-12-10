@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import study.springsecurity6.security.details.FormAuthenticationDetails;
+import study.springsecurity6.security.exception.SecretException;
 import study.springsecurity6.security.service.AccountContext;
 import study.springsecurity6.security.service.FormUserDetailsService;
 
@@ -27,6 +29,12 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
 
         if (!passwordEncoder.matches(password, accountContext.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String secretKey = ((FormAuthenticationDetails) authentication.getDetails()).getSecretKey();
+
+        if (secretKey == null || !secretKey.equals("secret")) {
+            throw new SecretException("secretKey 가 일치하지 않습니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(accountContext.getAccount(),null,accountContext.getAuthorities());
