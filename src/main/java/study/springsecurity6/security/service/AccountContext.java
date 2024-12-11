@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import study.springsecurity6.entity.Account;
+import study.springsecurity6.users.dto.AccountDto;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountContext implements UserDetails {
 
-    private final Account account;
+    private final AccountDto accountDto;
     private final List<GrantedAuthority> authorities;
 
     @Override
@@ -23,11 +23,11 @@ public class AccountContext implements UserDetails {
 
     @Override
     public String getPassword() {
-        return account.getPassword();
+        return accountDto.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return account.getUsername();
+        return accountDto.getUsername();
     }
 }

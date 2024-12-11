@@ -29,7 +29,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new RestAuthenticationToken(accountContext.getAuthorities(), accountContext.getAccount(), null);
+        return new RestAuthenticationToken(accountContext.getAuthorities(), accountContext.getAccountDto(), null);
     }
 
     @Override

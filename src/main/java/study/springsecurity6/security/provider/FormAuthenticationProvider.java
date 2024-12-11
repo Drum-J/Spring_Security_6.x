@@ -37,7 +37,7 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
             throw new SecretException("secretKey 가 일치하지 않습니다.");
         }
 
-        return new UsernamePasswordAuthenticationToken(accountContext.getAccount(),null,accountContext.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(accountContext.getAccountDto(),null,accountContext.getAuthorities());
     }
 
     @Override
