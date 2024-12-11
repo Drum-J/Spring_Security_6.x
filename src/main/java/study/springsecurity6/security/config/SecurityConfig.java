@@ -21,6 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import study.springsecurity6.security.filter.RestAuthenticationFilter;
 import study.springsecurity6.security.handler.FormAccessDeniedHandler;
+import study.springsecurity6.security.handler.FormAuthenticationFailureHandler;
+import study.springsecurity6.security.handler.FormAuthenticationSuccessHandler;
+import study.springsecurity6.security.handler.RestAuthenticationFailureHandler;
+import study.springsecurity6.security.handler.RestAuthenticationSuccessHandler;
 
 import static study.springsecurity6.entity.AccountRole.ADMIN;
 import static study.springsecurity6.entity.AccountRole.MANAGER;
@@ -34,8 +38,10 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final AuthenticationProvider restAuthenticationProvider;
     private final AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
-    private final AuthenticationSuccessHandler successHandler;
-    private final AuthenticationFailureHandler failureHandler;
+    private final FormAuthenticationSuccessHandler successHandler;
+    private final FormAuthenticationFailureHandler failureHandler;
+    private final RestAuthenticationSuccessHandler restSuccessHandler;
+    private final RestAuthenticationFailureHandler restFailureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -84,6 +90,8 @@ public class SecurityConfig {
     private RestAuthenticationFilter restAuthenticationFilter(AuthenticationManager authenticationManager) {
         RestAuthenticationFilter restAuthenticationFilter = new RestAuthenticationFilter();
         restAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        restAuthenticationFilter.setAuthenticationSuccessHandler(restSuccessHandler);
+        restAuthenticationFilter.setAuthenticationFailureHandler(restFailureHandler);
 
         return restAuthenticationFilter;
     }
