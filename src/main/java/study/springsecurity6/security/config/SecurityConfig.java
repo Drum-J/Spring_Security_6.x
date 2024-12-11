@@ -19,10 +19,12 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import study.springsecurity6.security.entrypoint.RestAuthenticationEntryPoint;
 import study.springsecurity6.security.filter.RestAuthenticationFilter;
 import study.springsecurity6.security.handler.FormAccessDeniedHandler;
 import study.springsecurity6.security.handler.FormAuthenticationFailureHandler;
 import study.springsecurity6.security.handler.FormAuthenticationSuccessHandler;
+import study.springsecurity6.security.handler.RestAccessDeniedHandler;
 import study.springsecurity6.security.handler.RestAuthenticationFailureHandler;
 import study.springsecurity6.security.handler.RestAuthenticationSuccessHandler;
 
@@ -79,11 +81,19 @@ public class SecurityConfig {
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .anyRequest().permitAll() // 우선 전체허용
+                        .requestMatchers("/api","/api/login").permitAll()
+                        .requestMatchers("/api/user").hasRole(USER.name())
+                        .requestMatchers("/api/manager").hasRole(MANAGER.name())
+                        .requestMatchers("/api/admin").hasRole(ADMIN.name())
+                        .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(restAuthenticationFilter(http, authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .authenticationManager(authenticationManager)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                        .accessDeniedHandler(new RestAccessDeniedHandler())
+                )
                 .build();
     }
 
