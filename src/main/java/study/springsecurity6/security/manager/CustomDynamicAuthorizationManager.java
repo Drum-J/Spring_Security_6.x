@@ -13,7 +13,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcherEntry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import study.springsecurity6.security.mapper.MapBasedUrlRoleMapper;
+import study.springsecurity6.admin.repository.ResourcesRepository;
+import study.springsecurity6.security.mapper.PersistentUrlRoleMapper;
 import study.springsecurity6.security.service.DynamicAuthorizationService;
 
 import java.util.List;
@@ -24,13 +25,14 @@ import java.util.function.Supplier;
 public class CustomDynamicAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
     private final HandlerMappingIntrospector handlerMappingIntrospector;
-    private static final AuthorizationDecision DENY = new AuthorizationDecision(false);
+    private final ResourcesRepository resourcesRepository;
+    private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
     private List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
 
     @PostConstruct
     public void mapping() {
         DynamicAuthorizationService dynamicAuthorizationService
-                = new DynamicAuthorizationService(new MapBasedUrlRoleMapper());
+                = new DynamicAuthorizationService(new PersistentUrlRoleMapper(resourcesRepository));
         mappings = dynamicAuthorizationService.getUrlRoleMappings()
                 .entrySet().stream()
                 .map(entry -> new RequestMatcherEntry<>(
@@ -56,7 +58,7 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
             }
         }
 
-        return DENY;
+        return ACCESS;
     }
 
     private AuthorizationManager<RequestAuthorizationContext> customAUthorizationManager(String role) {
