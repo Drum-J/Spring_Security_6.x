@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.springsecurity6.entity.Account;
-import study.springsecurity6.users.dto.SignupDto;
+import study.springsecurity6.users.dto.AccountDto;
 import study.springsecurity6.users.repository.AccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,8 +17,9 @@ public class UserService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public void createUser(SignupDto signupDto) {
-        Account account = signupDto.toEntity(passwordEncoder);
+    public void createUser(AccountDto accountDto) {
+        accountDto.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        Account account = accountDto.toEntity();
 
         accountRepository.save(account);
     }

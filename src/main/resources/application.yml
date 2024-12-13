@@ -12,6 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  thymeleaf:
+    cache: false
 
 logging.level:
   org.hibernate.SQL: debug

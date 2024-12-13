@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import study.springsecurity6.entity.Account;
+import study.springsecurity6.users.dto.AccountDto;
 
 @Controller
 public class LoginController {
@@ -52,10 +53,10 @@ public class LoginController {
 
     @GetMapping("/denied")
     public String accessDenied(@RequestParam(value = "exception",required = false) String exception,
-                               @AuthenticationPrincipal Account account,
+                               @AuthenticationPrincipal AccountDto accountDto,
                                Model model) {
 
-        model.addAttribute("username", account.getUsername());
+        model.addAttribute("username", accountDto.getUsername());
         model.addAttribute("exception", exception);
 
         return "login/denied";

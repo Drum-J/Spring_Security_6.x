@@ -3,11 +3,10 @@ package study.springsecurity6.users.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import study.springsecurity6.entity.Account;
-import study.springsecurity6.entity.AccountRole;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -19,13 +18,21 @@ public class AccountDto {
     private String username;
     private String password;
     private int age;
-    private AccountRole role;
+    private List<String> roles;
 
     public AccountDto(Account account) {
         this.id = account.getId();
         this.username = account.getUsername();
         this.password = account.getPassword();
         this.age = account.getAge();
-        this.role = account.getRole();
+    }
+
+    public Account toEntity() {
+        return Account.builder()
+                .id(this.id)
+                .username(this.username)
+                .password(this.password)
+                .age(this.age)
+                .build();
     }
 }
