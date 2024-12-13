@@ -19,6 +19,7 @@ import study.springsecurity6.security.service.DynamicAuthorizationService;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,19 +28,38 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
     private final HandlerMappingIntrospector handlerMappingIntrospector;
     private final ResourcesRepository resourcesRepository;
     private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
-    private List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
+    List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
+
+    private DynamicAuthorizationService dynamicAuthorizationService;
 
     @PostConstruct
     public void mapping() {
-        DynamicAuthorizationService dynamicAuthorizationService
+        dynamicAuthorizationService
                 = new DynamicAuthorizationService(new PersistentUrlRoleMapper(resourcesRepository));
-        mappings = dynamicAuthorizationService.getUrlRoleMappings()
+        setMapping();
+    }
+
+    /**
+     * synchronized : 동시성 문제 해결
+     * 동기화 해서 처리하겠다는 말인듯
+     */
+    public synchronized void reload() {
+        this.mappings.clear();
+        setMapping();
+    }
+
+    private void setMapping() {
+        this.mappings = dynamicAuthorizationService.getUrlRoleMappings()
                 .entrySet().stream()
                 .map(entry -> new RequestMatcherEntry<>(
                         new MvcRequestMatcher(handlerMappingIntrospector, entry.getKey()),
                         customAUthorizationManager(entry.getValue()))
                 )
-                .toList();
+                .collect(Collectors.toList());
+                // .toList(); 이걸로 List를 만드니까 clear() 호출 시 에러가 발생한다.
+                // toList() 메서드로 생성된 리스트는 내부적으로 List.of()를 사용하여 만들어집니다.
+                // 이는 수정 불가능한 리스트를 반환하므로, clear(), add(), remove() 같은 수정 작업이 허용되지 않습니다.
+                // 라고 한다.
     }
 
 
