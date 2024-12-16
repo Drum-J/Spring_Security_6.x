@@ -2,10 +2,12 @@ package study.springsecurity6.security.manager;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.access.expression.DefaultHttpSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
@@ -27,6 +29,7 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
 
     private final HandlerMappingIntrospector handlerMappingIntrospector;
     private final ResourcesRepository resourcesRepository;
+    private final RoleHierarchyImpl roleHierarchy;
     private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
     List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
 
@@ -85,9 +88,19 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
 
         if (role != null) {
             if (role.startsWith("ROLE")) {
-                return AuthorityAuthorizationManager.hasAuthority(role);
+                AuthorityAuthorizationManager<RequestAuthorizationContext> authorityManager
+                        = AuthorityAuthorizationManager.hasAuthority(role);
+                authorityManager.setRoleHierarchy(roleHierarchy);
+
+                return authorityManager;
             } else {
-                return new WebExpressionAuthorizationManager(role);
+                DefaultHttpSecurityExpressionHandler handler = new DefaultHttpSecurityExpressionHandler();
+                handler.setRoleHierarchy(roleHierarchy);
+
+                WebExpressionAuthorizationManager authorizationManager = new WebExpressionAuthorizationManager(role);
+                authorizationManager.setExpressionHandler(handler);
+
+                return authorizationManager;
             }
         }
 
